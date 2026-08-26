@@ -1,0 +1,17 @@
+nombre,precio,categoria,stock
+Cafe,1500,bebidas,6
+Te,1200,bebidas,8
+Jugo,1800,bebidas,0
+Agua,900,bebidas,12
+Leche,1100,bebidas,-1
+Croissant,1300,pasteleria,3
+Torta,12000,pasteleria,2
+Brownie,1600,pasteleria,4
+Galleta,700,pasteleria,10
+Pan,2200,panaderia,5
+Marraqueta,1900,panaderia,6
+Hallulla,1700,panaderia,4
+Sandwich,3500,almuerzo,4
+Ensalada,4200,almuerzo,3
+Empanada,2500,almuerzo,6
+Sopa,3800,almuerzo,2

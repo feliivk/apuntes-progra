@@ -1,0 +1,68 @@
+=== DCComercio ===
+Stock inválido para Torta: -2. Se mantiene en 0
+Productos cargados: 12
+Empleados cargados: 5
+- Cajero Ana
+- Cajero Benjamin
+- Repartidor Carla
+- Repartidor Diego
+- Polifuncional Elena
+MRO de Polifuncional: ['Polifuncional', 'Cajero', 'Repartidor', 'Empleado', 'ABC', 'object']
+=== Jornada ===
+Pedido #1 (local, Camila) en cola. Pedidos esperando: 1
+Pedido #2 (delivery, Tomas) en cola. Pedidos esperando: 2
+[Cajero Ana] Pedido #1 (local, Camila) cobrado: $4300
+[Repartidor Carla] Pedido #2 (delivery, Tomas) despachado a Norte: $11300
+Pedido #3 (local, Valentina) en cola. Pedidos esperando: 1
+Pedido #4 (delivery, Matias) en cola. Pedidos esperando: 2
+Pedido #5 (local, Sofia) en cola. Pedidos esperando: 3
+[Cajero Benjamin] Pedido #3 (local, Valentina) rechazado: falta Torta
+[Polifuncional Elena] Pedido #4 (delivery, Matias) despachado a Oriente: $13600
+[Cajero Ana] Pedido #5 (local, Sofia) cobrado: $4500
+No hay pedidos en cola
+Reposición de Torta: ahora tiene 3 unidades
+Stock inválido para Jugo: -5. Se mantiene en 0
+Reposición de Jugo: ahora tiene 0 unidades
+No existe el producto Sushi
+Reposición de Cafe: ahora tiene 4 unidades
+Pedido #6 (delivery, Ignacio) en cola. Pedidos esperando: 1
+Pedido #7 (local, Josefa) en cola. Pedidos esperando: 2
+Pedido #8 (delivery, Lucas) en cola. Pedidos esperando: 3
+Pedido #9 (local, Martina) en cola. Pedidos esperando: 4
+Pedido #10 (delivery, Pedro) en cola. Pedidos esperando: 5
+Pedido #6 (delivery, Ignacio) sin empleado disponible
+[Cajero Benjamin] Pedido #7 (local, Josefa) cobrado: $14400
+[Repartidor Diego] Pedido #8 (delivery, Lucas) despachado a Sur: $14300
+[Polifuncional Elena] Pedido #9 (local, Martina) cobrado: $2700
+[Polifuncional Elena] Pedido #10 (delivery, Pedro) despachado a Oriente: $8200
+Pedido #11 (local, Antonia) en cola. Pedidos esperando: 1
+Pedido #12 (local, Vicente) en cola. Pedidos esperando: 2
+[Cajero Ana] Pedido #11 (local, Antonia) rechazado: falta Empanada
+[Cajero Benjamin] Pedido #12 (local, Vicente) cobrado: $9400
+[LOG] Ejecutando pagar_sueldos
+=== Sueldos ===
+Repartidor Carla: $401500 (1 pedidos atendidos)
+Repartidor Diego: $401500 (1 pedidos atendidos)
+Polifuncional Elena: $508081 (3 pedidos atendidos)
+Cajero Ana: $450440 (2 pedidos atendidos)
+Cajero Benjamin: $430952 (2 pedidos atendidos)
+=== Inventario final ===
+Cafe ($1500) - stock: 3
+Te ($1200) - stock: 5
+Jugo ($1800) - stock: 0
+Agua ($900) - stock: 7
+Croissant ($1300) - stock: 3
+Torta ($12000) - stock: 2
+Brownie ($1600) - stock: 0
+Pan ($2200) - stock: 4
+Marraqueta ($1900) - stock: 0
+Sandwich ($3500) - stock: 1
+Ensalada ($4200) - stock: 1
+Empanada ($2500) - stock: 0
+Valor del inventario: $61200
+Agotados: Brownie, Empanada, Jugo, Marraqueta
+Categorías con quiebre de stock: almuerzo, bebidas, panaderia, pasteleria
+=== Pedidos rechazados (del más reciente al más antiguo) ===
+Pedido #11 (local, Antonia)
+Pedido #6 (delivery, Ignacio)
+Pedido #3 (local, Valentina)

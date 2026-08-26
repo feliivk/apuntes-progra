@@ -1,0 +1,8 @@
+tipo,nombre,sueldo_base,comision,zona,bono
+polifuncional,Fernanda,470000,0.04,Sur,20000
+cajero,Gabriel,440000,0.05,-,0
+repartidor,Hugo,410000,0,Sur,0
+repartidor,Isidora,410000,0,Norte,0
+cajero,Javiera,435000,0.06,-,0
+polifuncional,Kevin,465000,0.02,Norte,30000
+repartidor,Laura,405000,0,Sur,0

@@ -1,0 +1,101 @@
+=== DCComercio ===
+Stock inválido para Leche: -1. Se mantiene en 0
+Productos cargados: 16
+Empleados cargados: 7
+- Polifuncional Fernanda
+- Cajero Gabriel
+- Repartidor Hugo
+- Repartidor Isidora
+- Cajero Javiera
+- Polifuncional Kevin
+- Repartidor Laura
+MRO de Polifuncional: ['Polifuncional', 'Cajero', 'Repartidor', 'Empleado', 'ABC', 'object']
+=== Jornada ===
+No hay pedidos en cola
+Pedido #1 (local, Amanda) en cola. Pedidos esperando: 1
+Pedido #2 (delivery, Bruno) en cola. Pedidos esperando: 2
+Pedido #3 (delivery, Constanza) en cola. Pedidos esperando: 3
+Pedido #4 (local, Daniel) en cola. Pedidos esperando: 4
+[Polifuncional Fernanda] Pedido #1 (local, Amanda) cobrado: $5100
+[Repartidor Hugo] Pedido #2 (delivery, Bruno) despachado a Sur: $7800
+[Repartidor Isidora] Pedido #3 (delivery, Constanza) despachado a Norte: $10100
+[Cajero Gabriel] Pedido #4 (local, Daniel) rechazado: falta Jugo
+Pedido #5 (delivery, Emilia) en cola. Pedidos esperando: 1
+Pedido #6 (local, Franco) en cola. Pedidos esperando: 2
+Pedido #7 (delivery, Gaspar) en cola. Pedidos esperando: 3
+Pedido #8 (delivery, Helena) en cola. Pedidos esperando: 4
+Pedido #9 (local, Ivan) en cola. Pedidos esperando: 5
+[Repartidor Laura] Pedido #5 (delivery, Emilia) despachado a Sur: $14500
+[Cajero Javiera] Pedido #6 (local, Franco) cobrado: $12400
+Pedido #7 (delivery, Gaspar) sin empleado disponible
+[Polifuncional Fernanda] Pedido #8 (delivery, Helena) despachado a Sur: $7200
+[Polifuncional Kevin] Pedido #9 (local, Ivan) cobrado: $15900
+No hay pedidos en cola
+Reposición de Jugo: ahora tiene 4 unidades
+Stock inválido para Te: -14. Se mantiene en 6
+Reposición de Te: ahora tiene 6 unidades
+Reposición de Sopa: ahora tiene 1 unidades
+No existe el producto Pizza
+Stock inválido para Croissant: -3. Se mantiene en 0
+Reposición de Croissant: ahora tiene 0 unidades
+Reposición de Leche: ahora tiene 5 unidades
+Pedido #10 (local, Julieta) en cola. Pedidos esperando: 1
+Pedido #11 (delivery, Lorenzo) en cola. Pedidos esperando: 2
+Pedido #12 (delivery, Maite) en cola. Pedidos esperando: 3
+Pedido #13 (local, Nicolas) en cola. Pedidos esperando: 4
+Pedido #14 (delivery, Olivia) en cola. Pedidos esperando: 5
+Pedido #15 (local, Pablo) en cola. Pedidos esperando: 6
+Pedido #16 (delivery, Renata) en cola. Pedidos esperando: 7
+Pedido #17 (local, Santiago) en cola. Pedidos esperando: 8
+[Cajero Gabriel] Pedido #10 (local, Julieta) cobrado: $7100
+[Repartidor Isidora] Pedido #11 (delivery, Lorenzo) despachado a Norte: $13100
+[Repartidor Hugo] Pedido #12 (delivery, Maite) despachado a Sur: $13900
+[Cajero Javiera] Pedido #13 (local, Nicolas) rechazado: falta Torta
+[Polifuncional Kevin] Pedido #14 (delivery, Olivia) despachado a Norte: $14200
+[Polifuncional Fernanda] Pedido #15 (local, Pablo) rechazado: falta Sushi
+[Repartidor Laura] Pedido #16 (delivery, Renata) despachado a Sur: $25600
+[Cajero Gabriel] Pedido #17 (local, Santiago) cobrado: $11600
+No hay pedidos en cola
+Pedido #18 (delivery, Trinidad) en cola. Pedidos esperando: 1
+Pedido #19 (local, Ursula) en cola. Pedidos esperando: 2
+Pedido #20 (delivery, Vicente) en cola. Pedidos esperando: 3
+[Repartidor Hugo] Pedido #18 (delivery, Trinidad) rechazado: falta Galleta
+[Cajero Javiera] Pedido #19 (local, Ursula) cobrado: $9300
+[Repartidor Isidora] Pedido #20 (delivery, Vicente) rechazado: falta Hallulla
+No hay pedidos en cola
+[LOG] Ejecutando pagar_sueldos
+=== Sueldos ===
+Polifuncional Kevin: $496818 (2 pedidos atendidos)
+Polifuncional Fernanda: $491704 (2 pedidos atendidos)
+Repartidor Laura: $408000 (2 pedidos atendidos)
+Cajero Gabriel: $440935 (2 pedidos atendidos)
+Repartidor Hugo: $413000 (2 pedidos atendidos)
+Cajero Javiera: $436302 (2 pedidos atendidos)
+Repartidor Isidora: $413000 (2 pedidos atendidos)
+=== Inventario final ===
+Cafe ($1500) - stock: 0
+Te ($1200) - stock: 2
+Jugo ($1800) - stock: 0
+Agua ($900) - stock: 5
+Leche ($1100) - stock: 3
+Croissant ($1300) - stock: 0
+Torta ($12000) - stock: 0
+Brownie ($1600) - stock: 2
+Galleta ($700) - stock: 0
+Pan ($2200) - stock: 2
+Marraqueta ($1900) - stock: 0
+Hallulla ($1700) - stock: 0
+Sandwich ($3500) - stock: 0
+Ensalada ($4200) - stock: 0
+Empanada ($2500) - stock: 0
+Sopa ($3800) - stock: 0
+Valor del inventario: $17800
+Agotados: Cafe, Croissant, Empanada, Ensalada, Galleta, Hallulla, Jugo, Marraqueta, Sandwich, Sopa, Torta
+Categorías con quiebre de stock: almuerzo, bebidas, panaderia, pasteleria
+=== Pedidos rechazados (del más reciente al más antiguo) ===
+Pedido #20 (delivery, Vicente)
+Pedido #18 (delivery, Trinidad)
+Pedido #15 (local, Pablo)
+Pedido #13 (local, Nicolas)
+Pedido #7 (delivery, Gaspar)
+Pedido #4 (local, Daniel)

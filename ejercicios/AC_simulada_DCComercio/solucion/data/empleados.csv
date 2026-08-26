@@ -1,0 +1,6 @@
+tipo,nombre,sueldo_base,comision,zona,bono
+cajero,Ana,450000,0.05,-,0
+cajero,Benjamin,430000,0.04,-,0
+repartidor,Carla,400000,0,Norte,0
+repartidor,Diego,400000,0,Sur,0
+polifuncional,Elena,480000,0.03,Oriente,25000
