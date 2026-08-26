@@ -27,17 +27,16 @@ Jupyter (si no, usa los `.py`, tienen el mismo contenido).
 
 ## Cómo dejarlo en el pendrive (elige una)
 
-**A. Por GitHub (la ISO deja entrar a github.com).** En este computador:
+**A. Por GitHub (la ISO deja entrar a github.com).** Ya está subido como repo privado:
+`https://github.com/feliivk/apuntes-progra`. Booteado en Lubuntu:
 ```bash
-cd ~/Documents/Repo/progra2026/preparacion_control_1
-git init apuntes-progra && cp -r material_apoyo_pendrive/* apuntes-progra/ && cd apuntes-progra
-git add . && git commit -m "material de estudio"
-# crea un repo PRIVADO vacío en github.com (p. ej. apuntes-progra) y luego:
-git remote add origin https://github.com/<tu-usuario>/apuntes-progra.git
-git push -u origin main
+cd ~/Trabajo
+git clone https://github.com/feliivk/apuntes-progra.git
 ```
-Luego, booteado en Lubuntu: `cd ~/Trabajo && git clone https://github.com/<tu-usuario>/apuntes-progra.git`.
-No lo pongas dentro de tu repositorio de entregas del curso: mantén ese repo solo con `Actividades/`.
+Al ser privado te pedirá usuario (`feliivk`) y el **token** como contraseña (o antes `gh auth login`
+→ "Paste an authentication token"). Si hoy cambias algo en esta carpeta, súbelo con
+`git add . && git commit -m "cambios" && git push` desde este computador y haz `git pull` en Lubuntu.
+No lo pongas dentro de tu repositorio de entregas del curso: ese repo solo lleva `Actividades/`.
 
 **B. Con un segundo pendrive.** Copia la carpeta a otro USB, bootea Lubuntu, conecta el segundo
 USB y copia la carpeta a `~/Trabajo/`.
