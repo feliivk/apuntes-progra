@@ -1,61 +1,37 @@
-# Material de apoyo para llevar en el pendrive (carpeta `Trabajo`)
+# apuntes-progra — material de estudio personal IIC2233 2026-2
 
-Regla anunciada por el curso: en la evaluación se puede usar **apuntes de la materia** y
+Regla del curso (aviso del 26/08): en la evaluación se puede usar **apuntes de la materia** y
 **material de estudio personal preparado antes** (notebooks, códigos, ejemplos, ejercicios),
-**solo desde el mismo dispositivo Linux** (el pendrive). Nada llega desde otro computador,
-teléfono ni nube durante la evaluación, así que todo debe estar copiado hoy en `Trabajo`.
+**solo desde el mismo dispositivo Linux** (el pendrive). Todo debe estar hoy en `~/Trabajo`.
 
-Sugerencia honesta: este material se preparó estudiando con IA (permitido durante el estudio).
-Para que sea claramente *tu* material, reescribe la chuleta en tus palabras (aunque sea
-copiando a mano las partes que vas a usar) y, si tienes dudas de si cuenta, pregunta en las
-Discussions antes de mañana.
+## Qué hay
+- **`apuntes.ipynb`** — LA chuleta. Una sola, ordenada como se resuelve una AC:
+  0 flujo y comandos git · 1 estructura de `main.py` · 2 leer archivos · 3 clases (property,
+  classmethod, ABC, herencia, multiherencia con `**kwargs`) · 4 cargar datos y qué estructura usar ·
+  5 mini-demo de dict/defaultdict/stack/deque/set/namedtuple · 6 simular acciones con casos borde ·
+  7 reporte (sorted, formatos) · 8 lo que preguntan en el control · 9 error → arreglo ·
+  10 checklist antes del push. Resuelve una mini-AC (DCCafetería) de punta a punta; cada celda es
+  copiable. Ejecutar las celdas en orden (la primera crea `data/` de ejemplo).
+- `apuntes.py` — las mismas celdas en un `.py` (por si la ISO no trae Jupyter): `python3 apuntes.py`.
+- `ejercicios/` — AC simulada DCComercio (enunciado, base, solución) y los dos diagnósticos resueltos.
 
-## Qué hay aquí
-- `chuleta_oop_avanzado.py` / `.ipynb` — herencia, `super()`, multiherencia con `**kwargs`,
-  MRO/diamante, ABC, properties, `@classmethod`/`@staticmethod`, decoradores, `__str__`/`__repr__`,
-  operadores. Corre con `python3 chuleta_oop_avanzado.py` e imprime cada demo.
-- `chuleta_edd_archivos.py` / `.ipynb` — dict/defaultdict/stack/deque/set/namedtuple/`*args`,
-  lectura y escritura de CSV, paths y módulos.
-- `plantilla_ac.py` — esqueleto típico de una AC (clase abstracta con `**kwargs`, subclases,
-  multiherencia, property con validación, carga de CSV, cola de acciones con `deque`, stack para
-  deshacer, `defaultdict`). Ejecutable como demo.
-- `errores_frecuentes.md` — mensaje de error → causa → arreglo, más el flujo git.
-- `ejercicios/` — la AC simulada (enunciado, base y solución) y los dos diagnósticos resueltos.
-
-Los `.py` y `.md` se abren con Lite XL dentro de Lubuntu; los `.ipynb` solo si la ISO trae
-Jupyter (si no, usa los `.py`, tienen el mismo contenido).
-
-## Cómo dejarlo en el pendrive (elige una)
-
-**A. Por GitHub (la ISO deja entrar a github.com).** Ya está subido como repo privado:
-`https://github.com/feliivk/apuntes-progra`. Booteado en Lubuntu:
+## Dejarlo en el pendrive (booteado en Lubuntu)
 ```bash
 cd ~/Trabajo
-git clone https://github.com/feliivk/apuntes-progra.git
+git clone https://github.com/feliivk/apuntes-progra.git     # privado: usuario feliivk + token
+git clone https://github.com/IIC2233/contenidos.git          # apuntes oficiales
+git clone https://github.com/IIC2233/Syllabus.git            # ayudantías AY02/AY03 con solución
 ```
-Al ser privado te pedirá usuario (`feliivk`) y el **token** como contraseña (o antes `gh auth login`
-→ "Paste an authentication token"). Si hoy cambias algo en esta carpeta, súbelo con
-`git add . && git commit -m "cambios" && git push` desde este computador y haz `git pull` en Lubuntu.
-No lo pongas dentro de tu repositorio de entregas del curso: ese repo solo lleva `Actividades/`.
+Si cambias algo hoy en este computador: `git add . && git commit -m "cambios" && git push` desde
+esta carpeta, y `git pull` dentro de Lubuntu. No mezclar con el repo de entregas del curso.
 
-**B. Con un segundo pendrive.** Copia la carpeta a otro USB, bootea Lubuntu, conecta el segundo
-USB y copia la carpeta a `~/Trabajo/`.
+Alternativas si GitHub falla dentro de la ISO: copiar la carpeta con un segundo USB a `~/Trabajo/`.
 
-**C. Desde este Arch, montando la partición persistente del pendrive.** Conecta el pendrive,
-`lsblk -o NAME,SIZE,FSTYPE,LABEL` y monta la partición de datos (la que no es la ISO, normalmente
-ext4). La ruta interna de `Trabajo` depende de cómo esté armada la imagen del curso, así que
-si no la ves a simple vista, usa A o B.
+## Comprobación (hoy)
+1. Apagar, volver a bootear: `~/Trabajo` sigue con las tres carpetas.
+2. Abrir `apuntes.ipynb` (Jupyter) o `python3 ~/Trabajo/apuntes-progra/apuntes.py` corre sin errores.
+3. `git pull` en el repo de entregas funciona sin pedir clave.
 
-## Además, dentro de Lubuntu (apuntes oficiales)
-```bash
-cd ~/Trabajo
-git clone https://github.com/IIC2233/contenidos.git
-git clone https://github.com/IIC2233/Syllabus.git
-```
-Las ayudantías con solución están en `Syllabus/Ayudantías/AY02` y `AY03`; los apuntes de la
-semana 4 en `contenidos/semana-04-oop_avanzado/`.
-
-## Comprobación final (hoy)
-1. Apagar Lubuntu, volver a bootear y confirmar que `~/Trabajo` sigue con todo.
-2. `python3 ~/Trabajo/apuntes-progra/chuleta_oop_avanzado.py` corre sin errores.
-3. `git -C ~/Trabajo/<tu-usuario>-iic2233-2026-2 pull` funciona sin pedir clave (token guardado).
+## Test de mañana
+Resolver la AC real usando solo `apuntes.ipynb` + apuntes oficiales. Después anotar qué faltó,
+qué sobró y qué costó encontrar, para ajustar la chuleta para la próxima.
