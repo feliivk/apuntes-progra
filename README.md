@@ -5,6 +5,13 @@ Regla del curso (aviso del 26/08): en la evaluación se puede usar **apuntes de 
 **solo desde el mismo dispositivo Linux** (el pendrive). Todo debe estar hoy en `~/Trabajo`.
 
 ## Qué hay
+- **`chuleta_AC1_aldeanos.ipynb`** — mini chuleta específica de la **AC1**, con sus tres partes en orden:
+  **1)** definir property (getter + setter: acotada, solo lectura, validar en `__init__`) ·
+  **2)** manejo de aldeanos (agregar con capacidad/repetidos, buscar → `None`, eliminar, reportes) ·
+  **3)** personalidades del aldeano + `recibir_regalo` (subclases con polimorfismo **y** la variante sin
+  subclases). Incluye diccionario enunciado → código, una demo integradora con las tres partes juntas,
+  tabla error → arreglo y checklist. `chuleta_AC1_aldeanos.py` es la misma en `.py`; se regeneran con
+  `python3 build_chuleta_ac1.py --run` (también ejecuta todas las celdas).
 - **`chuleta_AC3_oop.ipynb`** — chuleta específica de la **AC3 (27/08, OOP avanzado)**: diccionario
   "enunciado → código", herencia, polimorfismo y métodos mágicos, multiherencia con `**kwargs`/MRO,
   ABC, properties, decoradores/classmethod/staticmethod, diagrama de clases → código, **3 problemas tipo
