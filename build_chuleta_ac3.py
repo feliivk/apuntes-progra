@@ -46,8 +46,10 @@ python3 -m unittest -v -b tests_publicos.tests_parte_1   # solo los de la parte 
 python3 -m unittest -v -b tests_publicos.tests_parte_1.VerificarAdd.test_dominante_dominante   # uno solo
 ```
 
-**Leer un test que falla:** `FAIL: test_x (...)` y más abajo `AssertionError: 'Blanco' != 'Negro'` → lo primero es lo que
-entregó **mi código**, lo segundo lo **esperado**. `ERROR:` (en vez de `FAIL:`) = mi código lanzó una excepción: leer la última línea del traceback.
+**Leer un test que falla:** `FAIL: test_x (...)` y más abajo `AssertionError: 'Blanco' != 'Negro'` → unittest muestra `primero != segundo`
+en el orden del `assertEqual(a, b)` del test (en los del curso casi siempre `a` = lo que entregó **mi código**, `b` = lo **esperado**;
+confirmar mirando la línea del test que sale en el traceback). `ERROR:` (en vez de `FAIL:`) = mi código lanzó una excepción: leer la última línea del traceback.
+**Ojo con la versión de Python:** los mensajes de error cambian un poco entre 3.10/3.11 (probable en la ISO Lubuntu) y 3.12+ (Arch); la tabla 11 muestra ambas formas.
 """)
 
 md(r"""
@@ -93,6 +95,10 @@ md(r"""
 | "decorador que…" | función que recibe `func` y retorna un `wrapper` | 6 |
 | "diagrama de clases" | flecha hueca = hereda; rombo = "tiene" (atributo con objeto/lista) | 7 |
 | "con probabilidad p" | `from random import random` → `if random() <= p:` | 10 |
+| "identificador único" / "id autoincremental" / "el primero es 0, el segundo 1…" | variable de clase + en `__init__`: `self.id = Clase.contador; Clase.contador += 1` | 6, 9 |
+| "lanza `ValueError`" / "levanta una excepción si…" | `if cond: raise ValueError("mensaje")` (en el setter o en el método) | 5 |
+| "mixin" / "agrega la capacidad de… a una clase" | clase chica con `__init__(self, **kwargs): super().__init__(**kwargs)`; va como segundo padre | 3, 8 |
+| "X es una lista/diccionario con métodos extra" / "hereda de `list`" | `class X(list):` y en los métodos usar `self` como la lista (`for e in self`, `self.append(...)`) | 1 |
 """)
 
 # =====================================================================
@@ -112,6 +118,8 @@ o **extender** (mismo nombre + `super().metodo()` adentro → reutiliza y agrega
 | ¿Es exactamente de esta clase? | `type(obj) is Mago` / `type(obj).__name__ == "Mago"` |
 | ¿Hereda de? | `issubclass(Mago, Personaje)` |
 | ¿Tiene ese atributo/método? | `hasattr(obj, "curar")` |
+| ¿Es de alguna de estas clases? | `isinstance(obj, (Dominante, Codominante))` → la tupla significa "o" |
+| Heredar de un built-in (`list`, `dict`) | `class Equipo(list):` → `self` **es** la lista (`for p in self`, `self.append`, `len(self)`) |
 """)
 
 code(r"""
@@ -155,6 +163,23 @@ g.atacar(m)
 print(m, "|", g)
 print(isinstance(m, Personaje), isinstance(m, Guerrero), isinstance(g, Mago))   # True False False
 print(issubclass(Mago, Personaje), type(m).__name__, hasattr(g, "curar"))       # True Mago False
+
+
+class Equipo(list):                             # hereda de un built-in: ya tiene append, len, in, [i], for
+    def __init__(self, nombre, *args):
+        super().__init__(*args)                 # list acepta un iterable inicial
+        self.nombre = nombre
+
+    def vivos(self):
+        return [p for p in self if p.vida > 0]  # 'self' ES la lista
+
+    def mas_fuerte(self):
+        return max(self, key=lambda p: p.vida)
+
+
+equipo = Equipo("Aventureros", [m, g])
+equipo.append(Guerrero("Ares", 0))
+print(len(equipo), [p.nombre for p in equipo.vivos()], equipo.mas_fuerte().nombre, isinstance(equipo, list))
 """)
 
 # =====================================================================
@@ -175,6 +200,10 @@ de distintas clases basta con `for p in lista: p.atacar(x)`; **no** hace falta `
 | `x in obj` | `__contains__(self, x)` | `bool` |
 | `obj[i]` | `__getitem__(self, i)` | el elemento |
 | `if obj:` | `__bool__(self)` | `bool` |
+
+⚠️ **No existe *overloading***: si en la misma clase escribo `def m(self, a)` y más abajo `def m(self, a, b)`, solo sobrevive el **último** (sin aviso).
+Para variar argumentos: valores por defecto `def m(self, a, b=None)` o `*args`. Cuidado con el copy-paste que deja dos `__init__`.
+⚠️ Si defino `__eq__`, el objeto deja de ser *hasheable* (no puede ir en `set` ni ser clave de `dict`) salvo que también defina `__hash__`.
 """)
 
 code(r"""
@@ -201,6 +230,9 @@ class Dinero:
     def __eq__(self, otro):                  # d1 == d2
         return isinstance(otro, Dinero) and self.monto == otro.monto
 
+    def __hash__(self):                      # necesario si defino __eq__ y quiero usar set / clave de dict
+        return hash((self.monto, self.moneda))
+
     def __lt__(self, otro):                  # d1 < d2  -> habilita sorted / min / max
         return self.monto < otro.monto
 
@@ -224,12 +256,15 @@ class Billetera:
 
 a, b = Dinero(1000), Dinero(2500)
 print(a + b, "|", b - a, "|", a * 3)                      # $3,500 CLP | $1,500 CLP | $3,000 CLP
-print(a == Dinero(1000), a < b, sorted([b, a]), max(a, b))   # True True [Dinero(1000), Dinero(2500)] Dinero(2500)
+print(a == Dinero(1000), a < b, sorted([b, a]), max(a, b))   # True True [Dinero(1000), Dinero(2500)] $2,500 CLP
+#                                       (dentro de la lista se usa __repr__; el objeto suelto en print usa __str__)
 w = Billetera()
 w.billetes += [a, b]
 print(len(w), Dinero(2500) in w, w[1], bool(Dinero(0)))    # 2 True $2,500 CLP False
+print(len({a, Dinero(1000), b}))                            # 2 (gracias a __eq__ + __hash__)
 
-# Polimorfismo: misma llamada, cada objeto responde a su manera (usa las clases de la sección 1)
+# Polimorfismo: misma llamada, cada objeto responde a su manera
+# (requiere haber corrido la celda de la sección 1: usa Mago, Guerrero y g)
 for p in [Mago("Gandalf", 80, 30), Guerrero("Xena", 120)]:
     p.atacar(g)                              # no necesito saber de qué clase es p
 
@@ -245,13 +280,17 @@ md(r"""
 Reglas (si no se cumplen, aparece un `TypeError` en el `__init__`):
 
 1. **Todos** los `__init__` de la cadena reciben `**kwargs` y llaman **una sola vez** `super().__init__(**kwargs)`.
+   Si el enunciado o `bases.py` dan la firma con `*args, **kwargs`, copiar esa forma tal cual: `def __init__(self, propio, *args, **kwargs): super().__init__(*args, **kwargs)`.
 2. Cada clase **saca por nombre** sus parámetros y **manda el resto** hacia arriba.
 3. Se instancia **por keyword**: `Pato(nombre="D", altura_max=100, ...)`.
 4. `C.__mro__` (o `C.mro()`) = orden en que Python busca métodos: `C, A, (padres de A), B, (padres de B), object`.
    Si `A` y `B` tienen el mismo método, **gana el primero de izquierda a derecha**.
 5. Para usar la versión de una clase específica (saltándose el MRO): `A.metodo(self, ...)`.
-6. **Diamante** (`A` y `B` heredan de la misma base): con `super()` la base corre **una** vez; con llamadas directas `A.m(self); B.m(self)` corre **dos** veces.
-7. Una clase "mixin" (ej. `Mutable`) es una clase pequeña que agrega comportamiento: se pone en la lista de padres igual que cualquier otra.
+6. **Diamante** (`A` y `B` heredan de la misma base): con `super()` en toda la cadena la base corre **una** vez. Con llamadas directas
+   `A.m(self); B.m(self)` desde `C(A, B)`: si `A.m` usa `super().m()`, ese `super()` salta a `B.m` (el siguiente en el MRO de `C`) → se ejecuta
+   A, B, Base, B, Base (la base **y B** corren dos veces). Las llamadas explícitas `Padre.m(self)` solo son seguras si los padres **no** llaman `super()` en ese método (como `recorrer` en Vehículos, sección 9).
+7. Una clase "mixin" (ej. `Mutable`) es una clase pequeña **sin base común** que agrega comportamiento: igual usa `**kwargs` + `super().__init__(**kwargs)` y se pone en la lista de padres (ejemplo `Ruidoso` abajo).
+8. Orden de los padres: de la **más específica a la más general**. `class X(Gen, Dominante)` (padre antes que su hija) da `TypeError: Cannot create a consistent method resolution order (MRO)`.
 """)
 
 code(r"""
@@ -303,6 +342,24 @@ class Cisne(Volador, Nadador):                    # sin redefinir moverse: gana 
 
 
 print(Cisne(nombre="Blanco", altura_max=50, profundidad_max=1).moverse())
+
+
+# --- MIXIN sin base común (estilo Mutable 2026-1): igual, **kwargs y UNA llamada a super ---
+class Ruidoso:                                    # no hereda de Ser
+    def __init__(self, volumen, **kwargs):
+        super().__init__(**kwargs)                # sigue el MRO: llega a la siguiente clase o a object
+        self.volumen = volumen
+
+    def gritar(self):
+        return f"{self.nombre} grita a {self.volumen} dB"   # usa atributos que pone OTRA clase del MRO
+
+
+class PatoRuidoso(Pato, Ruidoso):                 # MRO: PatoRuidoso, Pato, Volador, Nadador, Ser, Ruidoso, object
+    def __init__(self, **kwargs):
+        super().__init__(**kwargs)                # UNA sola llamada
+
+
+print(PatoRuidoso(nombre="Lucas", altura_max=5, profundidad_max=1, sonido="cuac", volumen=90).gritar())
 """)
 
 code(r"""
@@ -336,13 +393,33 @@ except TypeError as e:
 
 # =====================================================================
 md(r"""
-## 4. Clases abstractas: `ABC` + `@abstractmethod`
+## 4. Clases abstractas (`ABC` + `@abstractmethod`): "abstracta", "no se puede instanciar", "debe ser implementado por las subclases"
 
 - `from abc import ABC, abstractmethod`. La clase hereda de `ABC`; cada método obligatorio lleva `@abstractmethod` encima.
 - **No se puede instanciar** la abstracta ni una hija que no implemente **todos** los abstractos → `TypeError: Can't instantiate abstract class ...`.
 - Un método abstracto **puede tener código**: la hija lo reutiliza con `super().metodo()` (igual debe redefinirlo).
 - Los métodos normales de la abstracta se heredan tal cual (ahí va la lógica común: `simular`, `__str__`, etc.).
 - También puede ser abstracta una property: `@property` y debajo `@abstractmethod`.
+- `@abstractmethod` sobre `__init__` (aparece en el apunte, ej. `Figura`): la hija está **obligada** a escribir su propio `__init__` (normalmente `super().__init__(...)` + lo suyo).
+- "hereda de ABC" a secas ≠ "no se puede instanciar": solo poner `@abstractmethod` si el enunciado dice que el método es abstracto / que la clase no se instancia (en 2025-1 los tests instanciaban la base).
+
+**Esqueleto mínimo (el 90 % de los casos):**
+```python
+from abc import ABC, abstractmethod
+
+class Base(ABC):
+    def __init__(self, x, **kwargs):
+        super().__init__(**kwargs)
+        self.x = x
+
+    @abstractmethod
+    def accion(self):          # "debe ser implementado por las subclases"
+        pass
+
+class Hija(Base):
+    def accion(self):          # mismo nombre y mismos argumentos
+        return f"{self.x} en acción"
+```
 """)
 
 code(r"""
@@ -409,7 +486,8 @@ for f in [Cuadrado(lado=3), Circulo(radio=5)]:    # polimorfismo: misma llamada,
 try:
     Figura(nombre="x")
 except TypeError as e:
-    print("TypeError:", e)      # Can't instantiate abstract class Figura ... area, describir, lados
+    print("TypeError:", e)      # py<=3.11: Can't instantiate abstract class Figura with abstract methods area, describir, lados
+                                # py>=3.12: ...Figura without an implementation for abstract methods 'area', 'describir', 'lados'
 
 
 class Triangulo(Figura):                          # olvidé 'describir' y 'lados'
@@ -420,11 +498,33 @@ try:
     Triangulo(nombre="t")
 except TypeError as e:
     print("TypeError:", e)      # ...abstract methods describir, lados  -> me dice exactamente qué falta
+
+
+class Molde(ABC):
+    @abstractmethod
+    def __init__(self, nombre):               # __init__ abstracto: la hija DEBE definir el suyo
+        self.nombre = nombre
+
+
+class SinInit(Molde):
+    pass
+
+
+class ConInit(Molde):
+    def __init__(self, nombre):
+        super().__init__(nombre)              # puede reutilizar el cuerpo del abstracto
+
+
+try:
+    SinInit("a")
+except TypeError as e:
+    print("TypeError:", e)                    # ...abstract method '__init__'
+print(ConInit("b").nombre)                    # b
 """)
 
 # =====================================================================
 md(r"""
-## 5. Properties: `@property` + `@x.setter`
+## 5. Properties (`@property` + `@x.setter`): "no puede ser negativa", "acotada entre", "solo lectura", "atributo calculado", "se valida al asignar"
 
 Un atributo que por fuera se lee/asigna como `obj.x`, pero por detrás pasa por un método: sirve para **validar**, **calcular** o **avisar**.
 
@@ -436,10 +536,42 @@ Un atributo que por fuera se lee/asigna como `obj.x`, pero por detrás pasa por 
 | Solo lectura / calculado | solo el getter (asignar lanza `AttributeError`) |
 | Validar en el `__init__` también | crear `self._x = valor_seguro` y luego `self.x = valor` (pasa por el setter) |
 | Property abstracta | `@property` y debajo `@abstractmethod` (sección 4) |
-| Forma sin decoradores | `x = property(_get_x, _set_x)` |
+| Deleter (al hacer `del obj.x`) | `@x.deleter` sobre `def x(self): del self._x` |
+| Forma sin decoradores | `x = property(_get_x, _set_x, _del_x)` |
 
 ⚠️ Dentro del getter/setter usar **`self._x`**, nunca `self.x` (eso vuelve a llamar la property → `RecursionError`).
-⚠️ Si la hija quiere cambiar solo el setter, debe redefinir la property completa (getter + setter).
+⚠️ Si la hija quiere cambiar **solo el setter**: `@Padre.x.setter` sobre `def x(self, v)` (reutiliza el getter del padre, ejemplo `ArtistaPop`).
+Si quiere cambiar el **getter**: redefine `@property def x` (y `@x.setter` si necesita setter), ejemplo `ArtistaRock`.
+""")
+
+code(r"""
+# PLANTILLA setter: variantes según el enunciado
+# ("no puede ser negativa", "queda en 0", "acotada entre 0 y 100", "si es inválido se ignora", "lanza ValueError")
+class Plantilla:
+    def __init__(self, energia):
+        self._energia = 0              # SIEMPRE crear self._x antes de usar self.x
+        self.energia = energia         # pasa por el setter
+
+    @property
+    def energia(self):
+        return self._energia
+
+    @energia.setter
+    def energia(self, valor):
+        # 1) "no puede ser negativa (queda en 0)":
+        self._energia = max(0, valor)
+        # 2) "acotada entre 0 y 100":          self._energia = max(0, min(100, valor))
+        # 3) "si es inválido se ignora":        if valor < 0: return  →  else: self._energia = valor
+        # 4) "se redondea a 1 decimal":         self._energia = round(float(valor), 1)
+        # 5) "lanza ValueError si es negativo": if valor < 0: raise ValueError("energía negativa")
+
+
+p = Plantilla(-5)
+print(p.energia)                       # 0
+try:
+    raise ValueError("energía negativa")   # así se ve la variante 5 desde afuera
+except ValueError as e:
+    print("ValueError:", e)
 """)
 
 code(r"""
@@ -472,7 +604,7 @@ print(c.saldo, c.saldo_usd)            # 15000 15.79
 try:
     c.saldo_usd = 3
 except AttributeError as e:
-    print("AttributeError:", e)        # property 'saldo_usd' ... has no setter
+    print("AttributeError:", e)        # py>=3.11: property 'saldo_usd' of 'Cuenta' object has no setter | py3.10: can't set attribute 'saldo_usd'
 
 
 class Arquero:                         # estilo AY03: setter con tope y mensaje, getter con "estado"
@@ -539,6 +671,16 @@ rock.afinidad -= 80                  # 20 -> animo 2.0
 print(rock.animo)
 
 
+class ArtistaPop(Artista):
+    @Artista.afinidad.setter         # cambio SOLO el setter; el getter sigue siendo el del padre
+    def afinidad(self, valor):
+        self._afinidad = max(50, min(100, valor))   # el pop nunca baja de 50
+
+
+pop = ArtistaPop("Denise", 10)
+print(pop.afinidad, pop.animo)       # 50 5.0
+
+
 class Caja:                          # atributo "privado" con doble guion bajo (name mangling)
     def __init__(self):
         self.__dia = 1               # por fuera se llama _Caja__dia; NO se accede como caja.__dia
@@ -558,7 +700,7 @@ print(caja.dia, hasattr(caja, "__dia"), hasattr(caja, "_Caja__dia"))   # 2 False
 
 # =====================================================================
 md(r"""
-## 6. Decoradores, `@classmethod`, `@staticmethod` y variables de clase
+## 6. Decoradores, `@classmethod`, `@staticmethod`, variables de clase: "contador", "identificador único autoincremental", "verifica antes de ejecutar"
 
 - **Decorador** = función que recibe una función y retorna otra que la "envuelve". `@deco` sobre `def f` equivale a `f = deco(f)`.
   El `wrapper` recibe `*args, **kwargs` (así sirve para métodos: `self` viaja en `args`) y **debe retornar** lo que retornó la original.
@@ -595,6 +737,15 @@ def repetir(veces):                          # decorador CON parámetros: una ca
     return decorador
 
 
+def requiere_energia(func):                  # decorador que MIRA self antes de ejecutar ("verifica antes", "solo si")
+    def wrapper(self, *args, **kwargs):      # el 1er argumento de un método SIEMPRE es self
+        if self.velocidad <= 0:
+            print(f"{self.nombre} no puede: sin velocidad")
+            return None                      # el enunciado dice qué retornar en ese caso
+        return func(self, *args, **kwargs)   # ejecuta el método original
+    return wrapper
+
+
 class Robot:
     creados = 0                              # variable de CLASE: compartida por todos
     VELOCIDAD_MAX = 10                       # "constante" de clase
@@ -602,6 +753,7 @@ class Robot:
     def __init__(self, nombre, velocidad):
         self.nombre = nombre                 # variable de INSTANCIA
         self.velocidad = min(velocidad, self.VELOCIDAD_MAX)   # leer una de clase con self está OK
+        self.id = Robot.creados              # IDENTIFICADOR ÚNICO autoincremental: 0, 1, 2, ...
         Robot.creados += 1                   # escribirla: Robot.creados (NO self.creados)
         self.tareas = []                     # lista por instancia -> va en __init__, no en la clase
 
@@ -622,15 +774,20 @@ class Robot:
     def saludar(self):
         print(f"beep, soy {self.nombre}")
 
+    @requiere_energia
+    def retroceder(self, metros):
+        return -metros / self.velocidad
+
     def __repr__(self):
         return f"Robot({self.nombre})"
 
 
 r = Robot.desde_linea("R2D2,7\n")
 r2 = Robot("C3PO", 99)
-print(Robot.creados, Robot.es_valida(99), r2.velocidad)    # 2 False 10
+print(Robot.creados, r.id, r2.id, Robot.es_valida(99), r2.velocidad)    # 2 0 1 False 10
 print(r.avanzar(21))
 r.saludar()
+print(r.retroceder(14), Robot("Wall-E", 0).retroceder(5))               # -2.0 | mensaje y None
 r.tareas.append("limpiar")
 print(r.tareas, r2.tareas)                                # ['limpiar'] []  (listas separadas)
 """)
@@ -653,6 +810,10 @@ md(r"""
 | `1`, `0..1` en el extremo | un objeto (o ninguno) | `self.dueno = objeto` (o `None`) |
 | `*`, `1..*`, `0..*` | muchos | `list` / `dict` de objetos |
 | Línea punteada con triángulo hueco | implementa una interfaz | igual que herencia de una ABC |
+| `+ @kilometraje: int (getter y setter)` | **property** (convención del curso; si dice solo `getter` es de solo lectura) | `self._kilometraje` en `__init__` + `@property def kilometraje` (+ `@kilometraje.setter`) |
+| `+ _kilometraje: int` (con guion bajo) | atributo interno que respalda la property | `self._kilometraje = km` |
+| `+ dueño: str or None` | atributo que parte vacío | `self.dueño = None` en `__init__` |
+| la caja de la hija **no** repite lo del padre | lo hereda; solo se escriben los atributos/métodos nuevos o sobreescritos | no re-declarar; `super().__init__(...)` los crea |
 """)
 
 code(r"""
@@ -707,7 +868,11 @@ abstracto) y `ParDeGenes(gen1, gen2, fenotipo)`. **Parte 1:** completar `__add__
 `Mutable` e implemente `get_probabilidades_mutar`. Se corrige con `tests_publicos/` (`unittest`).
 
 Lo que se evalúa: leer una clase base ya hecha, implementar un operador (`__add__`) que **retorna un objeto nuevo**, decidir con
-`isinstance`, multiherencia con `**kwargs` (una sola llamada a `super`) y clases abstractas. Abajo está todo junto y resuelto.
+`isinstance`, multiherencia con `**kwargs` (una sola llamada a `super`) y clases abstractas. Abajo: primero lo que **me dan** (solo leer), luego lo que **escribo**.
+`REGISTRO` guarda **clases**, no objetos: `Gen.REGISTRO["pelo"]["Negro"]` es la clase `PeloNegro`; para crear el gen se llama: `Gen.REGISTRO["pelo"]["Negro"]()`.
+Lo mismo con cualquier dict `tipo -> Clase`: `clases[tipo](**datos)`.
+
+**`bases.py` — NO se toca, solo leer (qué me da):**
 """)
 
 code(r"""
@@ -765,9 +930,14 @@ class ParDeGenes:
 
     def __repr__(self):
         return self.fenotipo
+""")
 
+md(r"""
+**LO QUE ESCRIBO — Parte 1 (`dominancia.py`): `__add__` que retorna un `ParDeGenes`.**
+Patrón: `def __add__(self, other):` → decidir con `isinstance(other, Clase)` / `other.valor` → `return ObjetoNuevo(self, other, resultado)`.
+""")
 
-# ---------- "dominancia.py" (Parte 1: lo que había que completar) ----------
+code(r"""
 class Dominante(Gen):
     def __add__(self, other):
         return ParDeGenes(self, other, self.valor)  # el dominante siempre se expresa
@@ -793,7 +963,14 @@ class Codominante(Gen):
         return ParDeGenes(self, other, fenotipo)
 
 
-# ---------- "caracteristicas.py" (Parte 2) ----------
+print(Dominante(rasgo="ojos", valor="Rojos") + Recesivo(rasgo="ojos", valor="Verdes"))   # Rojos
+""")
+
+md(r"""
+**LO QUE ESCRIBO — Parte 2 (`caracteristicas.py`): multiherencia `class OjosCafes(Dominante, Mutable)` con una sola llamada a `super`.**
+""")
+
+code(r"""
 class PeloNegro(Dominante):
     def __init__(self):
         super().__init__(rasgo="pelo", valor="Negro")
@@ -834,6 +1011,7 @@ escribo mis propios `assert` o un test rápido como este (mismo formato que los 
 
 code(r"""
 import unittest
+from unittest.mock import patch
 
 
 class TestDominancia(unittest.TestCase):
@@ -842,12 +1020,27 @@ class TestDominancia(unittest.TestCase):
         self.assertIsInstance(par, ParDeGenes)
         self.assertEqual(par.fenotipo, "Negro")
 
-    def test_codominantes_distintos(self):
-        self.assertEqual((OjosVerdes() + OjosAzules()).fenotipo, "Mezcla entre Verdes y Azules")
+    def test_codominantes_distintos(self):        # assertIn: acepta cualquiera de las opciones
+        self.assertIn((OjosVerdes() + OjosAzules()).fenotipo,
+                      ["Mezcla entre Verdes y Azules", "Mezcla entre Azules y Verdes"])
+
+    def test_probabilidades(self):                # assertCountEqual: mismos elementos, CUALQUIER orden
+        self.assertCountEqual(OjosCafes().get_probabilidades_mutar(),
+                              [("Verdes", 0.1), ("Azules", 0.2), ("Cafes", 0.7)])
 
     def test_mutable(self):
         self.assertTrue(isinstance(OjosCafes(), Mutable))
         self.assertFalse(isinstance(OjosAzules(), Mutable))
+
+    def test_abstracta(self):                     # assertRaises: "no se puede instanciar"
+        with self.assertRaises(TypeError):
+            Gen(rasgo="x", valor="y")
+
+    def test_mutacion_forzada(self):              # patch: reemplaza el azar por un valor fijo
+        with patch("random.choice", return_value=OjosCafes()):        # se parcha DONDE SE USA la función
+            with patch("random.choices", return_value=["Verdes"]):
+                gen = (OjosCafes() + OjosCafes()).elegir_alelo_aleatorio()
+        self.assertEqual(gen.valor, "Verdes")
 
 
 suite = unittest.TestLoader().loadTestsFromTestCase(TestDominancia)
@@ -885,8 +1078,8 @@ class Vehiculo(ABC):
         self.marca = marca
         self._energia = 0.0
         self.energia = energia                            # pasa por el setter (acota y redondea)
-        self.identificador = Vehiculo.identificador       # leo el de la clase...
-        Vehiculo.identificador += 1                       # ...y lo incremento EN LA CLASE
+        self.identificador = Vehiculo.identificador       # atributo de INSTANCIA (mismo nombre que el de clase: lo tapa, es normal)
+        Vehiculo.identificador += 1                       # incremento SIEMPRE con Clase.x, nunca self.x
 
     @property
     def autonomia(self):                                  # solo lectura, calculada
@@ -1065,12 +1258,15 @@ class Crossfitero(Runner, Levantador):                 # hereda de dos: cuota_ba
         super().__init__(**kwargs)                     # una sola llamada
 
     def entrenar(self):
-        Runner.entrenar(self)                          # OJO: Runner.entrenar llama a super().entrenar()
-        # -> por el MRO (Crossfitero, Runner, Levantador, Socio) ese super() es Levantador.entrenar,
-        #    que a su vez llama a Socio.entrenar. Se ejecuta TODO una vez. Si no quiero eso,
-        #    llamo Socio.entrenar(self) directo y agrego lo mío a mano.
+        Runner.entrenar(self)   # su super() sigue el MRO → también corre Levantador.entrenar y Socio.entrenar (una vez c/u).
+                                # Si NO quiero eso: Socio.entrenar(self) directo y agrego lo mío a mano.
+""")
 
+md(r"""
+**Cargar desde texto `tipo,nombre,...` → dict nombre→objeto · simular acciones con casos borde y probabilidad · reporte con `sorted`.**
+""")
 
+code(r"""
 DATOS = '''tipo,nombre,energia,extra
 runner,Ana,80,20
 levantador,Beto,60,90
@@ -1123,17 +1319,20 @@ md(r"""
 |---|---|---|
 | `NameError: name 'Vehiculo' is not defined` al importar | la hija está definida **antes** que el padre en el archivo | ordenar: padres arriba, hijas abajo |
 | `TypeError: __str__ returned non-string (type NoneType)` | `__str__`/`__repr__` hace `print` en vez de `return` | `return f"..."` |
-| `TypeError: unhashable type: 'X'` al meter objetos en `set`/`dict` | definí `__eq__` sin `__hash__` | agregar `def __hash__(self): return hash(self.id)` |
+| `TypeError: unhashable type: 'X'` (py 3.14: `cannot use 'X' as a set element (unhashable type: 'X')`) al meter objetos en `set`/`dict` | definí `__eq__` sin `__hash__` | agregar `def __hash__(self): return hash(self.id)` |
 | `TypeError: '>=' not supported between instances of 'method' and 'int'` | sobreescribí una property en la hija **sin** volver a poner `@property` | `@property` también en la hija; `super().prop` sin paréntesis |
 | el test dice `TypeError: Can't instantiate...` pero el enunciado instancia la clase base | puse `@abstractmethod` donde no correspondía | "hereda de ABC" a secas ≠ "no se puede instanciar": solo abstracto si lo dicen |
 | `mock.assert_called_once` falla / el identificador salta de 2 en 2 | la base corre dos veces en el diamante (llamé `A.__init__(self)` y `B.__init__(self)`) | `super().__init__(*args, **kwargs)` en toda la cadena, una vez por clase |
-| `TypeError: Can't instantiate abstract class X with abstract method(s) m` | falta implementar `m` en la subclase (o instancié la abstracta) | `def m(self): ...` en la hija con ese nombre exacto |
+| `TypeError: Can't instantiate abstract class X with abstract methods m` (py ≤3.11) / `...X without an implementation for abstract methods 'm'` (py ≥3.12) | falta implementar `m` en la subclase (o instancié la abstracta) | `def m(self): ...` en la hija con ese nombre exacto |
+| `TypeError: Cannot create a consistent method resolution order (MRO) for bases Gen, Dominante` | puse un padre ANTES que su propia hija en la lista, o dos padres heredan de las mismas bases en distinto orden | ordenar de más específica a más general: `class OjosCafes(Dominante, Mutable)`, nunca `(Gen, Dominante)` |
+| `AttributeError: 'super' object has no attribute 'metodo'` | un padre/mixin llama `super().metodo()` y el siguiente en el MRO es `object` (o no tiene ese método) | combinar versiones llamando cada una explícitamente `A.metodo(self)`; `super()` en cadena solo si todas las clases lo definen |
+| un método "desaparece" o pide argumentos raros | dos `def` con el mismo nombre en la misma clase (copy-paste): Python se queda con el ÚLTIMO sin avisar | borrar el duplicado; para "dos versiones" usar valores por defecto `def m(self, a, b=None)` |
 | `TypeError: X.__init__() got an unexpected keyword argument 'z'` | pasé un keyword que ninguna clase de la cadena recibe (nombre mal escrito) | revisar el nombre del parámetro; las clases intermedias deben tener `**kwargs` |
 | `TypeError: object.__init__() takes exactly one argument` | un kwarg sobró y llegó hasta `object`, o una base sin `**kwargs` recibió kwargs | ver qué argumento sobra; la base debe "consumirlo" |
 | `TypeError: X.__init__() takes 2 positional arguments but 5 were given` | instancié con posicionales una clase con `**kwargs` | instanciar por keyword: `X(a=1, b=2)` |
 | `TypeError: X.__init__() missing 1 required positional argument: 'y'` | faltó un argumento (o `super().__init__()` sin lo que pide el padre) | pasar todo lo que pide cada `__init__` |
 | `AttributeError: 'X' object has no attribute '_y'` | usé la property antes de crear `self._y`, o no llamé `super().__init__` | en `__init__`: primero `super().__init__(...)`, luego `self._y = ...` |
-| `AttributeError: property 'y' of 'X' object has no setter` (o `can't set attribute`) | asigné a una property de solo lectura | agregar `@y.setter` o no asignar |
+| `AttributeError: property 'y' of 'X' object has no setter` (py ≥3.11) / `AttributeError: can't set attribute 'y'` (py 3.10) | asigné a una property de solo lectura | agregar `@y.setter` o no asignar |
 | `RecursionError: maximum recursion depth exceeded` | dentro del getter/setter usé `self.y` en vez de `self._y` | usar `self._y` adentro |
 | `TypeError: unsupported operand type(s) for +: 'X' and 'X'` | falta `__add__` | `def __add__(self, otro): return X(...)` |
 | `TypeError: '<' not supported between instances of 'X' and 'X'` | `sorted`/`min`/`max` sobre objetos sin `__lt__` | definir `__lt__` o usar `key=lambda o: o.attr` |
