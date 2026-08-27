@@ -5,7 +5,13 @@ Regla del curso (aviso del 26/08): en la evaluación se puede usar **apuntes de 
 **solo desde el mismo dispositivo Linux** (el pendrive). Todo debe estar hoy en `~/Trabajo`.
 
 ## Qué hay
-- **`apuntes.ipynb`** — LA chuleta. Una sola, ordenada como se resuelve una AC:
+- **`chuleta_AC3_oop.ipynb`** — chuleta específica de la **AC3 (27/08, OOP avanzado)**: diccionario
+  "enunciado → código", herencia, polimorfismo y métodos mágicos, multiherencia con `**kwargs`/MRO,
+  ABC, properties, decoradores/classmethod/staticmethod, diagrama de clases → código, **3 problemas tipo
+  resueltos** (genes AC3 2026-1, vehículos 2023-2→2025-1, sistema completo), tabla error → arreglo y
+  checklist. Incluye la comparación con las AC3 de los semestres 2023-2 a 2026-1. `chuleta_AC3_oop.py`
+  es la misma en `.py`; se regeneran con `python3 build_chuleta_ac3.py --run` (también ejecuta todo).
+- **`apuntes.ipynb`** — la chuleta general. Una sola, ordenada como se resuelve una AC:
   0 flujo y comandos git · 1 estructura de `main.py` · 2 leer archivos · 3 clases (property,
   classmethod, ABC, herencia, multiherencia con `**kwargs`) · 4 cargar datos y qué estructura usar ·
   5 mini-demo de dict/defaultdict/stack/deque/set/namedtuple · 6 simular acciones con casos borde ·
